@@ -13,11 +13,11 @@ export interface ExerciseItem {
   alternates?: string[] // additional accepted answers
 }
 
-export type ExerciseKind = 'matching' | 'flashcard' | 'type'
+export type ExerciseKind = 'matching' | 'flashcard' | 'type' | 'table'
 
 export type ExerciseSource =
   | { type: 'vocab'; topicId: string }
-  | { type: 'conjugation'; tenseId: string; verbClass?: string; drill: 'endings' | 'fullform' }
+  | { type: 'conjugation'; tenseId: string; verbClass?: string; drill: 'endings' | 'fullform' | 'table' }
   | { type: 'ai'; promptText: string } // Phase 2 only
 
 export interface Exercise {

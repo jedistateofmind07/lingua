@@ -34,6 +34,31 @@ describe('App routes render without crashing', () => {
   it('conjugation setup', () => {
     renderAt('/conjugations')
     expect(screen.getByText('Full forms')).toBeInTheDocument()
+    expect(screen.getByText('Full table')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Start' })).toBeInTheDocument()
+  })
+
+  it('conjugation table session renders the chosen verb paradigm', () => {
+    render(
+      <MemoryRouter
+        initialEntries={[
+          {
+            pathname: '/conjugations/session',
+            state: {
+              drill: 'table',
+              tense: 'presente',
+              verbClass: 'er',
+              kind: 'matching',
+              verb: 'tener'
+            }
+          }
+        ]}
+      >
+        <App />
+      </MemoryRouter>
+    )
+    expect(screen.getByText('Fill in the conjugation')).toBeInTheDocument()
+    expect(screen.getByText('tener')).toBeInTheDocument()
+    expect(screen.getAllByRole('textbox')).toHaveLength(5)
   })
 })

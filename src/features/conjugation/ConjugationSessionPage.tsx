@@ -2,22 +2,25 @@ import { useMemo, useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import {
   buildConjugationEndings,
-  buildConjugationFullForm
+  buildConjugationFullForm,
+  buildConjugationTable
 } from '../../lib/exerciseBuilders'
 import type { TenseId, VerbClass } from '../../types/conjugation'
 import type { ExerciseKind, ExerciseOutcome } from '../../types/exercise'
 import { MatchingGrid } from '../../components/exercises/MatchingGrid'
 import { TypeAnswer } from '../../components/exercises/TypeAnswer'
 import { Flashcard } from '../../components/exercises/Flashcard'
+import { ConjugationTable } from '../../components/exercises/ConjugationTable'
 import { ResultsPanel } from '../../components/exercises/ResultsPanel'
 import { SessionHeader } from '../../components/layout/SessionHeader'
 import { useProgress } from '../../store/progressStore'
 
 interface Config {
-  drill: 'endings' | 'fullform'
+  drill: 'endings' | 'fullform' | 'table'
   tense: TenseId
   verbClass: VerbClass | 'mixed'
   kind: ExerciseKind
+  verb?: string
 }
 
 export function ConjugationSessionPage() {
@@ -32,6 +35,9 @@ export function ConjugationSessionPage() {
     if (config.drill === 'endings') {
       const vc = config.verbClass === 'mixed' ? 'ar' : config.verbClass
       return buildConjugationEndings(config.tense, vc)
+    }
+    if (config.drill === 'table') {
+      return buildConjugationTable(config.tense, config.verbClass, config.verb)
     }
     return buildConjugationFullForm(config.tense, config.verbClass, config.kind)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- round re-seeds a fresh round on replay
@@ -65,6 +71,13 @@ export function ConjugationSessionPage() {
     )
   }
 
+  const heading =
+    exercise.kind === 'matching'
+      ? 'Tap the matching pairs'
+      : exercise.kind === 'table'
+        ? 'Fill in the conjugation'
+        : exercise.title
+
   return (
     <div className="flex flex-1 flex-col">
       <SessionHeader
@@ -72,9 +85,7 @@ export function ConjugationSessionPage() {
         total={exercise.items.length}
         onExit={() => navigate('/conjugations')}
       />
-      <h2 className="mb-4 mt-2 text-xl font-bold">
-        {exercise.kind === 'matching' ? 'Tap the matching pairs' : exercise.title}
-      </h2>
+      <h2 className="mb-4 mt-2 text-xl font-bold">{heading}</h2>
       {exercise.kind === 'matching' && (
         <MatchingGrid
           items={exercise.items}
@@ -92,6 +103,15 @@ export function ConjugationSessionPage() {
       {exercise.kind === 'flashcard' && (
         <Flashcard
           items={exercise.items}
+          onProgress={(c) => setProgress(c)}
+          onComplete={handleComplete}
+        />
+      )}
+      {exercise.kind === 'table' && (
+        <ConjugationTable
+          items={exercise.items}
+          verb={exercise.meta?.verb ?? ''}
+          tenseLabel={exercise.meta?.tenseLabel ?? ''}
           onProgress={(c) => setProgress(c)}
           onComplete={handleComplete}
         />

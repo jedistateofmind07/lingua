@@ -2,11 +2,12 @@ import { useState } from 'react'
 import type { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { TENSES, TENSE_BY_ID } from '../../data/conjugation/tenses'
+import { verbsForClass } from '../../data/conjugation/verbs'
 import type { TenseId, VerbClass } from '../../types/conjugation'
 import type { ExerciseKind } from '../../types/exercise'
 import { Button } from '../../components/ui/Button'
 
-type Drill = 'endings' | 'fullform'
+type Drill = 'fullform' | 'endings' | 'table'
 type ClassChoice = VerbClass | 'mixed'
 
 function Chip({
@@ -47,19 +48,27 @@ export function ConjugationSetupPage() {
   const [tense, setTense] = useState<TenseId>('presente')
   const [verbClass, setVerbClass] = useState<ClassChoice>('ar')
   const [kind, setKind] = useState<ExerciseKind>('matching')
+  const [verb, setVerb] = useState<string>('random')
 
   const tenseOptions = drill === 'endings' ? TENSES.filter((t) => !t.isCompound) : TENSES
+  const verbChoices = verbClass === 'mixed' ? [] : verbsForClass(verbClass)
 
   function chooseDrill(d: Drill) {
     setDrill(d)
+    setVerb('random')
     if (d === 'endings') {
       if (TENSE_BY_ID[tense].isCompound) setTense('presente')
       if (verbClass === 'mixed') setVerbClass('ar')
     }
   }
 
+  function chooseClass(c: ClassChoice) {
+    setVerbClass(c)
+    setVerb('random')
+  }
+
   function start() {
-    navigate('/conjugations/session', { state: { drill, tense, verbClass, kind } })
+    navigate('/conjugations/session', { state: { drill, tense, verbClass, kind, verb } })
   }
 
   return (
@@ -79,6 +88,9 @@ export function ConjugationSetupPage() {
         <Chip active={drill === 'fullform'} onClick={() => chooseDrill('fullform')}>
           Full forms
         </Chip>
+        <Chip active={drill === 'table'} onClick={() => chooseDrill('table')}>
+          Full table
+        </Chip>
         <Chip active={drill === 'endings'} onClick={() => chooseDrill('endings')}>
           Endings only
         </Chip>
@@ -94,16 +106,29 @@ export function ConjugationSetupPage() {
 
       <Section label="Verb type">
         {(['ar', 'er', 'ir'] as const).map((c) => (
-          <Chip key={c} active={verbClass === c} onClick={() => setVerbClass(c)}>
+          <Chip key={c} active={verbClass === c} onClick={() => chooseClass(c)}>
             -{c}
           </Chip>
         ))}
-        {drill === 'fullform' && (
-          <Chip active={verbClass === 'mixed'} onClick={() => setVerbClass('mixed')}>
+        {drill !== 'endings' && (
+          <Chip active={verbClass === 'mixed'} onClick={() => chooseClass('mixed')}>
             Mixed
           </Chip>
         )}
       </Section>
+
+      {drill === 'table' && (
+        <Section label="Verb">
+          <Chip active={verb === 'random'} onClick={() => setVerb('random')}>
+            🎲 Random
+          </Chip>
+          {verbChoices.map((v) => (
+            <Chip key={v.infinitive} active={verb === v.infinitive} onClick={() => setVerb(v.infinitive)}>
+              {v.infinitive}
+            </Chip>
+          ))}
+        </Section>
+      )}
 
       {drill === 'fullform' && (
         <Section label="Format">

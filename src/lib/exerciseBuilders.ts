@@ -95,3 +95,36 @@ export function buildConjugationFullForm(
     }
   }
 }
+
+// --- Conjugation: full-paradigm table fill-in (one verb, all persons) ---
+export function buildConjugationTable(
+  tense: TenseId,
+  verbClass: VerbClass | 'mixed',
+  verb?: string
+): Exercise {
+  const pool = verbsForClass(verbClass)
+  const chosen =
+    verb && verb !== 'random'
+      ? (pool.find((v) => v.infinitive === verb) ?? pickRandom(pool, 1)[0])
+      : pickRandom(pool, 1)[0]
+  const label = TENSE_BY_ID[tense].label
+  const items: ExerciseItem[] = PERSONS.map((person) => ({
+    id: `${chosen.infinitive}-${tense}-${person}`,
+    prompt: PERSON_LABELS[person],
+    answer: conjugate(chosen.infinitive, tense, person),
+    promptLang: 'es',
+    answerLang: 'es'
+  }))
+  return {
+    kind: 'table',
+    title: `${chosen.infinitive} · ${label}`,
+    items,
+    source: {
+      type: 'conjugation',
+      tenseId: tense,
+      verbClass: verbClass === 'mixed' ? undefined : verbClass,
+      drill: 'table'
+    },
+    meta: { verb: chosen.infinitive, tenseLabel: label }
+  }
+}
