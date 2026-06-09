@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import type { ExerciseOutcome } from '../../types/exercise'
 import { Button } from '../ui/Button'
 
@@ -11,6 +12,37 @@ export function ResultsPanel({
   onDone: () => void
 }) {
   const { correct, total, mistakes } = outcome
+  const perfect = total > 0 && correct === total
+
+  // Celebrate on completion — a bigger burst for a perfect score.
+  useEffect(() => {
+    let cancelled = false
+    import('canvas-confetti')
+      .then(({ default: confetti }) => {
+        if (cancelled) return
+        try {
+          const base = { spread: 75, startVelocity: 45, ticks: 200, origin: { y: 0.6 } }
+          confetti({ ...base, particleCount: perfect ? 160 : 70 })
+          if (perfect) {
+            window.setTimeout(
+              () => confetti({ ...base, particleCount: 120, angle: 60, origin: { x: 0, y: 0.65 } }),
+              150
+            )
+            window.setTimeout(
+              () => confetti({ ...base, particleCount: 120, angle: 120, origin: { x: 1, y: 0.65 } }),
+              300
+            )
+          }
+        } catch {
+          /* confetti is purely decorative — ignore any failure */
+        }
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [perfect])
+
   return (
     <div className="flex flex-1 flex-col py-8">
       <div className="flex flex-1 flex-col items-center justify-center text-center">
@@ -18,7 +50,7 @@ export function ResultsPanel({
           {correct}/{total}
         </span>
         <span className="mt-2 text-slate-400">
-          {correct === total ? '¡Perfecto!' : 'Keep practicing'}
+          {perfect ? '🎉 ¡Perfecto!' : '¡Buen trabajo! Keep practicing'}
         </span>
       </div>
       {mistakes.length > 0 && (

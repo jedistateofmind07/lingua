@@ -6,9 +6,11 @@ import { verbsForClass } from '../../data/conjugation/verbs'
 import type { TenseId, VerbClass } from '../../types/conjugation'
 import type { ExerciseKind } from '../../types/exercise'
 import { Button } from '../../components/ui/Button'
+import { ConjugationExplanations } from './ConjugationExplanations'
 
 type Drill = 'fullform' | 'endings' | 'table'
 type ClassChoice = VerbClass | 'mixed'
+type Tab = 'practice' | 'explanations'
 
 function Chip({
   active,
@@ -44,6 +46,7 @@ function Section({ label, children }: { label: string; children: ReactNode }) {
 
 export function ConjugationSetupPage() {
   const navigate = useNavigate()
+  const [tab, setTab] = useState<Tab>('practice')
   const [drill, setDrill] = useState<Drill>('fullform')
   const [tense, setTense] = useState<TenseId>('presente')
   const [verbClass, setVerbClass] = useState<ClassChoice>('ar')
@@ -84,65 +87,84 @@ export function ConjugationSetupPage() {
         <h1 className="text-2xl font-bold">Conjugations</h1>
       </header>
 
-      <Section label="Drill">
-        <Chip active={drill === 'fullform'} onClick={() => chooseDrill('fullform')}>
-          Full forms
+      <div className="flex gap-2">
+        <Chip active={tab === 'practice'} onClick={() => setTab('practice')}>
+          Practice
         </Chip>
-        <Chip active={drill === 'table'} onClick={() => chooseDrill('table')}>
-          Full table
+        <Chip active={tab === 'explanations'} onClick={() => setTab('explanations')}>
+          Explanations
         </Chip>
-        <Chip active={drill === 'endings'} onClick={() => chooseDrill('endings')}>
-          Endings only
-        </Chip>
-      </Section>
-
-      <Section label="Tense">
-        {tenseOptions.map((t) => (
-          <Chip key={t.id} active={tense === t.id} onClick={() => setTense(t.id)}>
-            {t.label}
-          </Chip>
-        ))}
-      </Section>
-
-      <Section label="Verb type">
-        {(['ar', 'er', 'ir'] as const).map((c) => (
-          <Chip key={c} active={verbClass === c} onClick={() => chooseClass(c)}>
-            -{c}
-          </Chip>
-        ))}
-        {drill !== 'endings' && (
-          <Chip active={verbClass === 'mixed'} onClick={() => chooseClass('mixed')}>
-            Mixed
-          </Chip>
-        )}
-      </Section>
-
-      {drill === 'table' && (
-        <Section label="Verb">
-          <Chip active={verb === 'random'} onClick={() => setVerb('random')}>
-            🎲 Random
-          </Chip>
-          {verbChoices.map((v) => (
-            <Chip key={v.infinitive} active={verb === v.infinitive} onClick={() => setVerb(v.infinitive)}>
-              {v.infinitive}
-            </Chip>
-          ))}
-        </Section>
-      )}
-
-      {drill === 'fullform' && (
-        <Section label="Format">
-          {(['matching', 'type', 'flashcard'] as const).map((k) => (
-            <Chip key={k} active={kind === k} onClick={() => setKind(k)}>
-              {k === 'type' ? 'Type' : k === 'matching' ? 'Match' : 'Flashcards'}
-            </Chip>
-          ))}
-        </Section>
-      )}
-
-      <div className="mt-auto pb-2">
-        <Button onClick={start}>Start</Button>
       </div>
+
+      {tab === 'explanations' ? (
+        <ConjugationExplanations />
+      ) : (
+        <>
+          <Section label="Drill">
+            <Chip active={drill === 'fullform'} onClick={() => chooseDrill('fullform')}>
+              Full forms
+            </Chip>
+            <Chip active={drill === 'table'} onClick={() => chooseDrill('table')}>
+              Full table
+            </Chip>
+            <Chip active={drill === 'endings'} onClick={() => chooseDrill('endings')}>
+              Endings only
+            </Chip>
+          </Section>
+
+          <Section label="Tense">
+            {tenseOptions.map((t) => (
+              <Chip key={t.id} active={tense === t.id} onClick={() => setTense(t.id)}>
+                {t.label}
+              </Chip>
+            ))}
+          </Section>
+
+          <Section label="Verb type">
+            {(['ar', 'er', 'ir'] as const).map((c) => (
+              <Chip key={c} active={verbClass === c} onClick={() => chooseClass(c)}>
+                -{c}
+              </Chip>
+            ))}
+            {drill !== 'endings' && (
+              <Chip active={verbClass === 'mixed'} onClick={() => chooseClass('mixed')}>
+                Mixed
+              </Chip>
+            )}
+          </Section>
+
+          {drill === 'table' && (
+            <Section label="Verb">
+              <Chip active={verb === 'random'} onClick={() => setVerb('random')}>
+                🎲 Random
+              </Chip>
+              {verbChoices.map((v) => (
+                <Chip
+                  key={v.infinitive}
+                  active={verb === v.infinitive}
+                  onClick={() => setVerb(v.infinitive)}
+                >
+                  {v.infinitive}
+                </Chip>
+              ))}
+            </Section>
+          )}
+
+          {drill === 'fullform' && (
+            <Section label="Format">
+              {(['matching', 'type', 'flashcard'] as const).map((k) => (
+                <Chip key={k} active={kind === k} onClick={() => setKind(k)}>
+                  {k === 'type' ? 'Type' : k === 'matching' ? 'Match' : 'Flashcards'}
+                </Chip>
+              ))}
+            </Section>
+          )}
+
+          <div className="mt-auto pb-2">
+            <Button onClick={start}>Start</Button>
+          </div>
+        </>
+      )}
     </div>
   )
 }
