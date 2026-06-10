@@ -1,7 +1,9 @@
 import type { VocabDeck, VocabTopicId, VocabEntry, Region, Gender } from '../../types/vocab'
 import { body } from './body'
+import { face } from './face'
 import { kitchen } from './kitchen'
 import { household } from './household'
+import { bedroom } from './bedroom'
 import { food } from './food'
 import { animals } from './animals'
 import { family } from './family'
@@ -12,8 +14,10 @@ import { schoolWork } from './schoolWork'
 
 export const DECKS: VocabDeck[] = [
   body,
+  face,
   kitchen,
   household,
+  bedroom,
   food,
   animals,
   family,

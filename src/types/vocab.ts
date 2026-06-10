@@ -20,8 +20,10 @@ export interface VocabEntry {
 
 export type VocabTopicId =
   | 'body'
+  | 'face'
   | 'kitchen'
   | 'household'
+  | 'bedroom'
   | 'food'
   | 'animals'
   | 'family'
