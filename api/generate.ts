@@ -6,6 +6,10 @@ import Anthropic from '@anthropic-ai/sdk'
 
 const MODEL = 'claude-opus-4-8'
 
+// Claude Code OAuth tokens are only honored when the request identifies as
+// Claude Code — the first system block must be exactly this line.
+const CC_IDENTITY = "You are Claude Code, Anthropic's official CLI for Claude."
+
 // Keep in sync with src/data/conjugation/verbs.ts (the engine can correctly
 // conjugate any regular verb plus these verified irregulars).
 const ALLOWED_VERBS = [
@@ -118,7 +122,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const msg = await client.messages.create({
       model: MODEL,
       max_tokens: 1500,
-      system: SYSTEM,
+      system: [
+        { type: 'text', text: CC_IDENTITY },
+        { type: 'text', text: SYSTEM }
+      ],
       tools: [TOOL],
       tool_choice: { type: 'tool', name: 'generate_exercise' },
       messages: [{ role: 'user', content: prompt }]
