@@ -15,7 +15,13 @@ export const kitchen: VocabDeck = {
     { es: 'sartén', en: 'frying pan', gender: 'f' },
     { es: 'horno', en: 'oven', gender: 'm' },
     { es: 'estufa', en: 'stove', gender: 'f' },
-    { es: 'refrigerador', en: 'refrigerator', gender: 'm' },
+    {
+      es: 'nevera',
+      en: 'refrigerator',
+      gender: 'f',
+      mx: { es: 'refrigerador', gender: 'm' },
+      co: { es: 'nevera', gender: 'f' }
+    },
     { es: 'fregadero', en: 'sink', gender: 'm' },
     { es: 'servilleta', en: 'napkin', gender: 'f' },
     { es: 'licuadora', en: 'blender', gender: 'f' },

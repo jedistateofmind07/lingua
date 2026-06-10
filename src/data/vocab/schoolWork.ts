@@ -8,7 +8,13 @@ export const schoolWork: VocabDeck = {
     { es: 'libro', en: 'book', gender: 'm' },
     { es: 'cuaderno', en: 'notebook', gender: 'm' },
     { es: 'lápiz', en: 'pencil', gender: 'm' },
-    { es: 'bolígrafo', en: 'pen', gender: 'm' },
+    {
+      es: 'esfero',
+      en: 'pen',
+      gender: 'm',
+      mx: { es: 'pluma', gender: 'f' },
+      co: { es: 'esfero', gender: 'm' }
+    },
     { es: 'mochila', en: 'backpack', gender: 'f' },
     { es: 'examen', en: 'exam', gender: 'm' },
     { es: 'tarea', en: 'homework', gender: 'f' },
@@ -17,7 +23,13 @@ export const schoolWork: VocabDeck = {
     { es: 'estudiante', en: 'student', gender: 'mf' },
     { es: 'pregunta', en: 'question', gender: 'f' },
     { es: 'respuesta', en: 'answer', gender: 'f' },
-    { es: 'computadora', en: 'computer', gender: 'f' },
+    {
+      es: 'computador',
+      en: 'computer',
+      gender: 'm',
+      mx: { es: 'computadora', gender: 'f' },
+      co: { es: 'computador', gender: 'm' }
+    },
     { es: 'escritorio', en: 'desk', gender: 'm' },
     { es: 'oficina', en: 'office', gender: 'f' },
     { es: 'jefe', en: 'boss', gender: 'm' },

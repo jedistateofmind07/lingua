@@ -1,12 +1,13 @@
 import type { Exercise, ExerciseItem, ExerciseKind } from '../types/exercise'
 import type { Person, TenseId, VerbClass } from '../types/conjugation'
-import type { VocabDeck, Gender as VocabGender } from '../types/vocab'
+import type { VocabDeck, Gender as VocabGender, Region } from '../types/vocab'
 import type { VerbInfo } from '../data/conjugation/verbs'
 import { PERSONS, PERSON_LABELS } from '../types/conjugation'
 import { TENSE_BY_ID } from '../data/conjugation/tenses'
 import { ENDINGS } from '../data/conjugation/endings'
 import { conjugate } from '../engine/conjugate'
 import { verbsForClass } from '../data/conjugation/verbs'
+import { resolveEntry } from '../data/vocab'
 import { pickRandom } from './shuffle'
 
 export const DEFAULT_ROUND = 6
@@ -17,10 +18,15 @@ function genderArticle(gender?: VocabGender): string | undefined {
   return undefined
 }
 
-// --- Vocabulary: Spanish <-> English matching ---
-export function buildVocabMatching(deck: VocabDeck, n = DEFAULT_ROUND): Exercise {
+// --- Vocabulary: Spanish <-> English matching (region-aware) ---
+export function buildVocabMatching(
+  deck: VocabDeck,
+  n = DEFAULT_ROUND,
+  region: Region = 'co'
+): Exercise {
   const chosen = pickRandom(deck.entries, n)
-  const items: ExerciseItem[] = chosen.map((e, i) => {
+  const items: ExerciseItem[] = chosen.map((entry, i) => {
+    const e = resolveEntry(entry, region)
     const article = genderArticle(e.gender)
     return {
       id: `${deck.id}-${i}`,

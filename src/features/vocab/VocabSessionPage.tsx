@@ -6,19 +6,21 @@ import { MatchingGrid } from '../../components/exercises/MatchingGrid'
 import { ResultsPanel } from '../../components/exercises/ResultsPanel'
 import { SessionHeader } from '../../components/layout/SessionHeader'
 import { useProgress } from '../../store/progressStore'
+import { useSettings } from '../../store/settingsStore'
 import type { ExerciseOutcome } from '../../types/exercise'
 
 export function VocabSessionPage() {
   const { topicId } = useParams()
   const navigate = useNavigate()
   const recordSession = useProgress((s) => s.recordSession)
+  const region = useSettings((s) => s.region)
   const deck = topicId ? getDeck(topicId) : undefined
 
   const [round, setRound] = useState(0)
   const exercise = useMemo(
-    () => (deck ? buildVocabMatching(deck) : null),
+    () => (deck ? buildVocabMatching(deck, undefined, region) : null),
     // eslint-disable-next-line react-hooks/exhaustive-deps -- round re-seeds a fresh round on replay
-    [deck, round]
+    [deck, round, region]
   )
   const [progress, setProgress] = useState(0)
   const [outcome, setOutcome] = useState<ExerciseOutcome | null>(null)

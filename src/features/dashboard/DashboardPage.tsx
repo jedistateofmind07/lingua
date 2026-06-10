@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { Tile } from '../../components/ui/Tile'
+import { RegionSelector } from '../../components/ui/RegionSelector'
 import { useProgress } from '../../store/progressStore'
 
 export function DashboardPage() {
@@ -8,11 +9,16 @@ export function DashboardPage() {
 
   return (
     <div className="flex flex-1 flex-col gap-6 py-8">
-      <header className="flex items-center justify-between">
+      <header className="flex items-center justify-between gap-3">
         <h1 className="text-3xl font-bold">Lingua</h1>
-        <span className="rounded-full bg-navy-800 px-3 py-1 text-sm text-slate-300">🔥 {streak}</span>
+        <RegionSelector />
       </header>
-      <p className="text-slate-400">Practice Spanish — vocabulary and conjugations.</p>
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-slate-400">Practice Spanish — vocabulary and conjugations.</p>
+        <span className="shrink-0 rounded-full bg-navy-800 px-3 py-1 text-sm text-slate-300">
+          🔥 {streak}
+        </span>
+      </div>
 
       <div className="flex flex-col gap-3">
         <Tile

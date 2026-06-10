@@ -13,7 +13,13 @@ export const food: VocabDeck = {
     { es: 'huevo', en: 'egg', gender: 'm' },
     { es: 'arroz', en: 'rice', gender: 'm' },
     { es: 'manzana', en: 'apple', gender: 'f' },
-    { es: 'plátano', en: 'banana', gender: 'm' },
+    {
+      es: 'banano',
+      en: 'banana',
+      gender: 'm',
+      mx: { es: 'plátano', gender: 'm' },
+      co: { es: 'banano', gender: 'm' }
+    },
     { es: 'naranja', en: 'orange', gender: 'f' },
     { es: 'leche', en: 'milk', gender: 'f' },
     { es: 'agua', en: 'water', gender: 'f' },

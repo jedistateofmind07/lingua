@@ -1,4 +1,4 @@
-import type { VocabDeck, VocabTopicId } from '../../types/vocab'
+import type { VocabDeck, VocabTopicId, VocabEntry, Region, Gender } from '../../types/vocab'
 import { body } from './body'
 import { kitchen } from './kitchen'
 import { household } from './household'
@@ -29,4 +29,17 @@ export const DECK_BY_ID: Record<VocabTopicId, VocabDeck> = Object.fromEntries(
 
 export function getDeck(id: string): VocabDeck | undefined {
   return DECK_BY_ID[id as VocabTopicId]
+}
+
+// Resolve an entry to the word + gender for the selected region.
+export function resolveEntry(
+  entry: VocabEntry,
+  region: Region
+): { es: string; en: string; gender?: Gender } {
+  const variant = region === 'mx' ? entry.mx : entry.co
+  return {
+    es: variant?.es ?? entry.es,
+    en: entry.en,
+    gender: variant?.gender ?? entry.gender
+  }
 }
