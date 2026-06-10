@@ -17,7 +17,8 @@ describe('App routes render without crashing', () => {
     expect(screen.getByRole('heading', { name: 'Lingua' })).toBeInTheDocument()
     expect(screen.getByText('Vocabulary')).toBeInTheDocument()
     expect(screen.getByText('Conjugations')).toBeInTheDocument()
-    expect(screen.getByText('Coming in Phase 2')).toBeInTheDocument()
+    expect(screen.getByText('Ask Lingua')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Generate exercise' })).toBeInTheDocument()
   })
 
   it('vocab topics', () => {

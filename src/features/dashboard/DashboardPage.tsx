@@ -1,11 +1,33 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Tile } from '../../components/ui/Tile'
+import { Button } from '../../components/ui/Button'
 import { RegionSelector } from '../../components/ui/RegionSelector'
 import { useProgress } from '../../store/progressStore'
+import { generateExercise } from '../../lib/aiClient'
 
 export function DashboardPage() {
   const navigate = useNavigate()
   const streak = useProgress((s) => s.streak)
+
+  const [prompt, setPrompt] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function ask() {
+    const q = prompt.trim()
+    if (!q || loading) return
+    setLoading(true)
+    setError(null)
+    try {
+      const plan = await generateExercise(q)
+      navigate('/ai/session', { state: { plan, prompt: q } })
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Something went wrong.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="flex flex-1 flex-col gap-6 py-8">
@@ -36,18 +58,21 @@ export function DashboardPage() {
       </div>
 
       <div className="mt-2">
-        <div className="mb-2 flex items-center gap-2">
-          <h2 className="text-lg font-semibold">Ask Lingua</h2>
-          <span className="rounded-full bg-navy-700 px-2 py-0.5 text-xs text-slate-400">
-            Coming in Phase 2
-          </span>
-        </div>
+        <h2 className="mb-2 text-lg font-semibold">Ask Lingua</h2>
         <textarea
-          disabled
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
           rows={3}
-          placeholder="e.g. “Make me flashcards for past-tense -er verbs”"
-          className="w-full cursor-not-allowed resize-none rounded-card border border-navy-700 bg-navy-850 px-4 py-3 text-slate-400 opacity-60"
+          maxLength={500}
+          placeholder="e.g. “flashcards for past-tense -er verbs” or “kitchen vocabulary”"
+          className="w-full resize-none rounded-card border border-navy-700 bg-navy-850 px-4 py-3 text-slate-100 outline-none focus:border-accent"
         />
+        {error && <p className="mt-2 text-sm text-red-300">{error}</p>}
+        <div className="mt-3">
+          <Button onClick={ask} disabled={loading || prompt.trim() === ''}>
+            {loading ? 'Generating…' : 'Generate exercise'}
+          </Button>
+        </div>
       </div>
     </div>
   )

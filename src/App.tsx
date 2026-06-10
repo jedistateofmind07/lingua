@@ -5,6 +5,7 @@ import { VocabTopicsPage } from './features/vocab/VocabTopicsPage'
 import { VocabSessionPage } from './features/vocab/VocabSessionPage'
 import { ConjugationSetupPage } from './features/conjugation/ConjugationSetupPage'
 import { ConjugationSessionPage } from './features/conjugation/ConjugationSessionPage'
+import { AiSessionPage } from './features/ai/AiSessionPage'
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="/vocab/:topicId" element={<VocabSessionPage />} />
         <Route path="/conjugations" element={<ConjugationSetupPage />} />
         <Route path="/conjugations/session" element={<ConjugationSessionPage />} />
+        <Route path="/ai/session" element={<AiSessionPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AppShell>

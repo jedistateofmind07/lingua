@@ -6,7 +6,7 @@ import { PERSONS, PERSON_LABELS } from '../types/conjugation'
 import { TENSE_BY_ID } from '../data/conjugation/tenses'
 import { ENDINGS } from '../data/conjugation/endings'
 import { conjugate } from '../engine/conjugate'
-import { verbsForClass } from '../data/conjugation/verbs'
+import { verbsForClass, ALL_PRACTICE_VERBS } from '../data/conjugation/verbs'
 import { resolveEntry } from '../data/vocab'
 import { pickRandom } from './shuffle'
 
@@ -72,9 +72,15 @@ export function buildConjugationFullForm(
   tense: TenseId,
   verbClass: VerbClass | 'mixed',
   kind: ExerciseKind = 'type',
-  n = DEFAULT_ROUND
+  n = DEFAULT_ROUND,
+  verbsOverride?: string[]
 ): Exercise {
-  const verbs = verbsForClass(verbClass)
+  // When the AI targets specific verbs, restrict the pool to those (already
+  // filtered to known-safe infinitives); otherwise use the class pool.
+  const override = verbsOverride?.length
+    ? ALL_PRACTICE_VERBS.filter((v) => verbsOverride.includes(v.infinitive))
+    : []
+  const verbs = override.length ? override : verbsForClass(verbClass)
   const combos: { verb: VerbInfo; person: Person }[] = []
   for (const verb of verbs) {
     for (const person of PERSONS) combos.push({ verb, person })
